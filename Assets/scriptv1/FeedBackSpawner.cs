@@ -13,6 +13,10 @@ public class FeedBackSpawner : MonoBehaviour
     [Header("Settings")]
     public float upScreenRatio = 0.2f;
     public float duration = 1f;
+    public void ShowOK() => Spawn(okSprite);
+    public void ShowNice() => Spawn(niceSprite);
+    public void ShowPerfect() => Spawn(perfectSprite);
+    public void ShowBad() => Spawn(badSprite);
     void Update()
     {
         var kb = Keyboard.current;
