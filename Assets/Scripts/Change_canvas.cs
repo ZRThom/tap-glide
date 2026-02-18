@@ -84,14 +84,17 @@ public class Change_canvas : MonoBehaviour
 
             case "Level 1": 
             case "Jeu":
+            loadQueue();
                 if(jeuCanvas) jeuCanvas.SetActive(true); 
                 break;
 
             case "Level 2": 
+            loadQueue();
                 if(level2Canvas) level2Canvas.SetActive(true); 
                 break;
 
             case "Level 3": 
+            loadQueue();
                 if(level3Canvas) level3Canvas.SetActive(true); 
                 break;
             
@@ -104,6 +107,28 @@ public class Change_canvas : MonoBehaviour
             default:
                 Debug.LogWarning("Le nom '" + nom + "' n'est pas reconnu dans le switch.");
                 break;
+      
+        }
+    }
+    private void loadQueue()
+    {
+        KeyManager km = KeyManager.Instance;
+        if (km != null)
+        {
+            Debug.Log("Chargement des queues dans KeyManager...");
+            double[] leftNotes = { 7.0, 10.0, 12.0, 14.0, 16.0, 19.0, 22.0, 25.0, 27.0, 30.0, 33.0, 36.0, 39.0 };
+            double[] upNotes = { 8.0, 9.0, 11.0, 13.0, 15.0, 18.0, 21.0, 23.0, 26.0, 29.0, 31.0, 34.0 };
+            double[] downNotes = { 9.5, 10.5, 12.5, 14.5, 17.0, 18.0, 20.0, 22.0, 24.0, 26.5, 28.0, 30.0 };
+            double[] rightNotes = { 11.0, 13.0, 16.0, 17.0, 20.0, 23.0, 24.0, 27.0, 29.0, 32.0, 36.0, 38.0 };
+
+            km.EnqueueNotes(leftNotes, km.setLeftQueue);
+            km.EnqueueNotes(upNotes, km.setUpQueue);
+            km.EnqueueNotes(downNotes, km.setDownQueue);
+            km.EnqueueNotes(rightNotes, km.setRightQueue);
+        }
+        else
+        {
+            Debug.LogError("KeyManager instance is null. Cannot load queues.");
         }
     }
 }
