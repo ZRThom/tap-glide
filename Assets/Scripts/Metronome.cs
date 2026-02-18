@@ -16,7 +16,7 @@ public class Metronome : MonoBehaviour
     private double sampleRate = 0.0;
     private int accent;
     private bool running = false;
-    
+
     private double startDspTime;
     private double startSample;
     public float startOffsetSeconds = 0.1f;
@@ -54,7 +54,7 @@ public class Metronome : MonoBehaviour
     private const string CALIB_KEY = "CALIBRATION_MS";
     void Start()
     {
-        km=KeyManager.Instance;
+        km = KeyManager.Instance;
         calibrationMS = PlayerPrefs.GetFloat(CALIB_KEY, calibrationMS);
         accent = signatureHi;
         sampleRate = AudioSettings.outputSampleRate;
@@ -80,10 +80,10 @@ public class Metronome : MonoBehaviour
             for (int i = 0; i < channels; i++)
             {
                 data[n * channels + i] += x;
-            } 
+            }
             while (sample + n >= nextTick)
             {
-                tickPassed ++; 
+                tickPassed++;
                 CreateCircle = true;
                 nextTick += samplesPerTick;
                 amp = 1.0F;
@@ -182,7 +182,7 @@ public class Metronome : MonoBehaviour
         double withinTick = sampleSinceStart % samplesPerTick;
         if (withinTick < 0) withinTick += samplesPerTick;
         // fix inversement (horrible)
-                double signedErrorSamples = withinTick;
+        double signedErrorSamples = withinTick;
         if (withinTick > samplesPerTick * 0.5) signedErrorSamples = withinTick - samplesPerTick; // inversement (+ = -)
         float signedErrorMs = (float)(signedErrorSamples / sampleRate * 1000.0f);
         float absMs = Mathf.Abs(signedErrorMs);
@@ -241,7 +241,7 @@ public class Metronome : MonoBehaviour
             km.SpawnLeft(speed);
             LeftToSpawn = km.getNextLeft(i);
         }
-if (tickPassed + 6 == UpToSpawn)
+        if (tickPassed + 6 == UpToSpawn)
         {
             j++;
             Debug.Log("Spawning up circle...");
