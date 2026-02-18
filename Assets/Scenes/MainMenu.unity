@@ -1032,7 +1032,7 @@ GameObject:
   - component: {fileID: 251189030}
   - component: {fileID: 251189031}
   m_Layer: 0
-  m_Name: CanvasManagers
+  m_Name: Canvas&ScenesManagers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1068,7 +1068,10 @@ MonoBehaviour:
   menuPrincipal: {fileID: 376224539}
   creditsCanvas: {fileID: 1690892343}
   settingsCanvas: {fileID: 871816911}
-  jeuCanvas: {fileID: 186552138}
+  gameSelectCanvas: {fileID: 186552138}
+  jeuCanvas: {fileID: 0}
+  level2Canvas: {fileID: 0}
+  level3Canvas: {fileID: 0}
 --- !u!1 &251927649
 GameObject:
   m_ObjectHideFlags: 0
@@ -2282,14 +2285,14 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 251189031}
         m_TargetAssemblyTypeName: Change_canvas, Assembly-CSharp
-        m_MethodName: AfficherJeu
+        m_MethodName: AfficherGameSelect
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Game_select
           m_BoolArgument: 0
         m_CallState: 1
 --- !u!114 &431550047
@@ -3689,7 +3692,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 689876494}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 251189031}
+        m_TargetAssemblyTypeName: Change_canvas, Assembly-CSharp
+        m_MethodName: ChargerSceneEtCanvas
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 'GameScene:Level 2 '
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &689876494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4488,7 +4503,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 210, y: -919}
+  m_AnchoredPosition: {x: 210, y: -764.31}
   m_SizeDelta: {x: 749.2054, y: 435.4998}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &812040028
@@ -5612,7 +5627,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1008489795}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 251189031}
+        m_TargetAssemblyTypeName: Change_canvas, Assembly-CSharp
+        m_MethodName: ChargerSceneEtCanvas
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 'GameScene:Level 1 '
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1008489795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6473,7 +6500,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1238027906}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 251189031}
+        m_TargetAssemblyTypeName: Change_canvas, Assembly-CSharp
+        m_MethodName: ChargerSceneEtCanvas
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 'GameScene:Level 3 '
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1238027906
 MonoBehaviour:
   m_ObjectHideFlags: 0
