@@ -3,27 +3,51 @@ using UnityEngine.UI;
 
 public class BG_LuminaManager : MonoBehaviour
 {
+    public CustomSettings settings;
     public Slider slider;
+
     private Image targetImage;
+    private SpriteRenderer targetSprite;
 
     void Awake()
     {
         targetImage = GetComponent<Image>();
+        targetSprite = GetComponent<SpriteRenderer>();
+    }
+
+    void Start()
+    {
+        if (settings != null)
+        {
+            settings.LoadSettings();
+            ApplyBrightness(settings.bgBrightness);
+            
+            if (slider != null)
+            {
+                slider.SetValueWithoutNotify(settings.bgBrightness);
+            }
+        }
     }
 
     public void UpdateBrightness(float value)
     {
-        if (targetImage != null)
+        ApplyBrightness(value);
 
+        if (settings != null)
         {
-
-            targetImage.color = new Color(value, value, value, 1f);
+            settings.bgBrightness = value;
+            settings.SaveSettings();
         }
-        slider.SetValueWithoutNotify(value);
     }
 
-    void OnSliderChanged(float ms)
+    private void ApplyBrightness(float value)
     {
-        PlayerPrefs.Save();
+        Color newColor = new Color(value, value, value, 1f);
+
+        if (targetImage != null)
+            targetImage.color = newColor;
+
+        if (targetSprite != null)
+            targetSprite.color = newColor;
     }
- }
+}
