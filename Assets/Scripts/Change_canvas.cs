@@ -20,15 +20,15 @@ public class Change_canvas : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(canvasAActiver))
         {
-            Debug.Log("Activation automatique de : " + canvasAActiver);
             AppliquerAffichage(canvasAActiver);
             canvasAActiver = ""; 
         }
     }
 
- 
     public void ChargerSceneEtCanvas(string instruction)
     {
+        PlayerPrefs.Save(); 
+
         if (instruction.Contains(":"))
         {
             string[] parts = instruction.Split(':');
@@ -42,7 +42,6 @@ public class Change_canvas : MonoBehaviour
         }
     }
 
-   
     public void AfficherMenu()       => AppliquerAffichage("Menu");
     public void AfficherCredits()    => AppliquerAffichage("Credits");
     public void AfficherSettings()   => AppliquerAffichage("Settings");
@@ -51,10 +50,8 @@ public class Change_canvas : MonoBehaviour
     public void AfficherLevel2()     => AppliquerAffichage("Level 2");
     public void AfficherLevel3()     => AppliquerAffichage("Level 3");
 
- 
     private void AppliquerAffichage(string nom)
     {
-   
         if(menuPrincipal)    menuPrincipal.SetActive(false);
         if(creditsCanvas)    creditsCanvas.SetActive(false);
         if(settingsCanvas)   settingsCanvas.SetActive(false);

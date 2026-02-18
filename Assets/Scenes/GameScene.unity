@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 19409949}
   - component: {fileID: 19409948}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Score TMP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -720,6 +720,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: MainMenu:Canvas Game_select
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 136544468}
+        m_TargetAssemblyTypeName: Change_canvas, Assembly-CSharp
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &254935898
@@ -1339,6 +1351,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ScoreManager
   scoreText: {fileID: 19409948}
   score: 0
+  levelName: ' '
 --- !u!114 &643865375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2811,7 +2824,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1779193413
 RectTransform:
   m_ObjectHideFlags: 0
