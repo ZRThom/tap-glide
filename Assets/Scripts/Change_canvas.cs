@@ -13,7 +13,8 @@ public class Change_canvas : MonoBehaviour
     public GameObject jeuCanvas;  
     public GameObject level2Canvas;
     public GameObject level3Canvas;
-
+    public GameObject LvlCalibrage;
+    
     private static string canvasAActiver = "";
 
     void Start()
@@ -49,6 +50,7 @@ public class Change_canvas : MonoBehaviour
     public void AfficherLevel1()     => AppliquerAffichage("Level 1");
     public void AfficherLevel2()     => AppliquerAffichage("Level 2");
     public void AfficherLevel3()     => AppliquerAffichage("Level 3");
+    public void AfficherCalibrage() => AppliquerAffichage("Calibrage");
 
     private void AppliquerAffichage(string nom)
     {
@@ -59,6 +61,7 @@ public class Change_canvas : MonoBehaviour
         if(jeuCanvas)        jeuCanvas.SetActive(false); 
         if(level2Canvas)     level2Canvas.SetActive(false);
         if(level3Canvas)     level3Canvas.SetActive(false);
+        if(LvlCalibrage)     LvlCalibrage.SetActive(false);
 
         switch (nom)
         {
@@ -90,6 +93,12 @@ public class Change_canvas : MonoBehaviour
 
             case "Level 3": 
                 if(level3Canvas) level3Canvas.SetActive(true); 
+                break;
+            
+            case "Calibrage":
+            case "LvlCalibrage":
+            case "Calibration":
+                if (LvlCalibrage) LvlCalibrage.SetActive(true);
                 break;
                 
             default:
