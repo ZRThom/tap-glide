@@ -21,10 +21,10 @@ public class Metronome : MonoBehaviour
     private double startSample;
     public float startOffsetSeconds = 0.1f;
 
-
     [Header("FeedBack and score")]
     public FeedBackSpawner spawner;
     public ScoreManager scoreManager;
+    public PulseCircle pulseCircle;
 
     [Header("Timing fix")]
     public float perfectMs = 45f;
@@ -33,8 +33,10 @@ public class Metronome : MonoBehaviour
     public float calibrationMS = 0f;
 
     public bool halfTickOffset = true;
+    private const string CALIB_KEY = "CALIBRATION_MS";
     void Start()
     {
+        calibrationMS = PlayerPrefs.GetFloat(CALIB_KEY, calibrationMS);
         accent = signatureHi;
         sampleRate = AudioSettings.outputSampleRate;
         // delai pr eviter le decalage music de chiasse
@@ -114,27 +116,41 @@ public class Metronome : MonoBehaviour
 
             if (absMs <= perfectMs)
             {
+                if (pulseCircle != null) pulseCircle.PulsePerfect();
                 spawner?.ShowPerfect();
                 scoreManager?.AddPoints(5);
                 Debug.Log("Perfect");
             }
             else if (absMs <= niceMs)
             {
+                if (pulseCircle != null) pulseCircle.PulseNice();
                 spawner?.ShowNice();
                 scoreManager?.AddPoints(3);
                 Debug.Log(isEarly? "Early" : "Late");
             }
             else if (absMs <= okMs)
             {
+                if (pulseCircle != null) pulseCircle.PulseOk();
                 spawner?.ShowOK();
                 scoreManager?.AddPoints(1);
                 Debug.Log(isEarly? "TooEarly" : "TooLate");
             }
             else
             {
+                if (pulseCircle != null) pulseCircle.PulseBad();
                 spawner?.ShowBad();
                 Debug.Log("Bad");
             }
+        }
+    }
+
+    public void SetCalibration(float ms, bool save = true)
+    {
+        calibrationMS = ms;
+        if (save)
+        {
+            PlayerPrefs.SetFloat(CALIB_KEY, calibrationMS);
+            PlayerPrefs.Save();
         }
     }
 }
