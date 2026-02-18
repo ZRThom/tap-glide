@@ -35,10 +35,10 @@ public class Metronome : MonoBehaviour
     private int k = 0;
     private int l = 0;
 
-
     [Header("FeedBack and score")]
     public FeedBackSpawner spawner;
     public ScoreManager scoreManager;
+    public PulseCircle pulseCircle;
 
     [Header("Timing fix")]
     public float perfectMs = 45f;
@@ -47,10 +47,12 @@ public class Metronome : MonoBehaviour
     public float calibrationMS = 0f;
 
     public bool halfTickOffset = true;
+    private const string CALIB_KEY = "CALIBRATION_MS";
     void Start()
     {
         //get the queue of the keys to spawn from the KeyManager
         km = KeyManager.Instance;
+        calibrationMS = PlayerPrefs.GetFloat(CALIB_KEY, calibrationMS);
         accent = signatureHi;
         sampleRate = AudioSettings.outputSampleRate;
         // delai pr eviter le decalage music de chiasse

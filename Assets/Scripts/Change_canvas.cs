@@ -13,22 +13,23 @@ public class Change_canvas : MonoBehaviour
     public GameObject jeuCanvas;
     public GameObject level2Canvas;
     public GameObject level3Canvas;
-
+    public GameObject LvlCalibrage;
+    
     private static string canvasAActiver = "";
 
     void Start()
     {
         if (!string.IsNullOrEmpty(canvasAActiver))
         {
-            Debug.Log("Activation automatique de : " + canvasAActiver);
             AppliquerAffichage(canvasAActiver);
             canvasAActiver = "";
         }
     }
 
-
     public void ChargerSceneEtCanvas(string instruction)
     {
+        PlayerPrefs.Save(); 
+
         if (instruction.Contains(":"))
         {
             string[] parts = instruction.Split(':');
@@ -42,26 +43,25 @@ public class Change_canvas : MonoBehaviour
         }
     }
 
-
-    public void AfficherMenu() => AppliquerAffichage("Menu");
-    public void AfficherCredits() => AppliquerAffichage("Credits");
-    public void AfficherSettings() => AppliquerAffichage("Settings");
+    public void AfficherMenu()       => AppliquerAffichage("Menu");
+    public void AfficherCredits()    => AppliquerAffichage("Credits");
+    public void AfficherSettings()   => AppliquerAffichage("Settings");
     public void AfficherGameSelect() => AppliquerAffichage("Canvas Game_select");
-    public void AfficherLevel1() => AppliquerAffichage("Level 1");
-    public void AfficherLevel2() => AppliquerAffichage("Level 2");
-    public void AfficherLevel3() => AppliquerAffichage("Level 3");
-
+    public void AfficherLevel1()     => AppliquerAffichage("Level 1");
+    public void AfficherLevel2()     => AppliquerAffichage("Level 2");
+    public void AfficherLevel3()     => AppliquerAffichage("Level 3");
+    public void AfficherCalibrage() => AppliquerAffichage("Calibrage");
 
     private void AppliquerAffichage(string nom)
     {
-
-        if (menuPrincipal) menuPrincipal.SetActive(false);
-        if (creditsCanvas) creditsCanvas.SetActive(false);
-        if (settingsCanvas) settingsCanvas.SetActive(false);
-        if (gameSelectCanvas) gameSelectCanvas.SetActive(false);
-        if (jeuCanvas) jeuCanvas.SetActive(false);
-        if (level2Canvas) level2Canvas.SetActive(false);
-        if (level3Canvas) level3Canvas.SetActive(false);
+        if(menuPrincipal)    menuPrincipal.SetActive(false);
+        if(creditsCanvas)    creditsCanvas.SetActive(false);
+        if(settingsCanvas)   settingsCanvas.SetActive(false);
+        if(gameSelectCanvas) gameSelectCanvas.SetActive(false);
+        if(jeuCanvas)        jeuCanvas.SetActive(false); 
+        if(level2Canvas)     level2Canvas.SetActive(false);
+        if(level3Canvas)     level3Canvas.SetActive(false);
+        if(LvlCalibrage)     LvlCalibrage.SetActive(false);
 
         switch (nom)
         {
@@ -97,7 +97,13 @@ public class Change_canvas : MonoBehaviour
                 loadQueue();
                 if (level3Canvas) level3Canvas.SetActive(true);
                 break;
-
+            
+            case "Calibrage":
+            case "LvlCalibrage":
+            case "Calibration":
+                if (LvlCalibrage) LvlCalibrage.SetActive(true);
+                break;
+                
             default:
                 Debug.LogWarning("Le nom '" + nom + "' n'est pas reconnu dans le switch.");
                 break;
