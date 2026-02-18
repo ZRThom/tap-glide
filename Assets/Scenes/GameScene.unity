@@ -2788,6 +2788,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 643865373}
+  - {fileID: 1477013180}
   - {fileID: 2015160092}
   - {fileID: 1838687079}
   m_Father: {fileID: 0}
@@ -4122,11 +4123,11 @@ Transform:
   m_GameObject: {fileID: 1477013179}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 960, y: 540, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1126399716}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1477013181
 MonoBehaviour:
@@ -4140,11 +4141,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 679e9e141e4c5404695b461b80efd0a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyManager
+  settings: {fileID: 11400000, guid: 252db8e738c764946ad7aedab10783f0, type: 2}
   left: {fileID: 355581229}
   up: {fileID: 721620556}
   down: {fileID: 155323244}
   right: {fileID: 1248149469}
-  Circle: {fileID: 8894857096471909546, guid: df7846b66e13f2f49bead4d45aae274b, type: 3}
+  Circle: {fileID: 3626317181643000078, guid: df7846b66e13f2f49bead4d45aae274b, type: 3}
 --- !u!4 &1629118114 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7878350319992209165, guid: 4eeacd062a5490d4db4a52958a21be4c, type: 3}
@@ -5595,6 +5597,5 @@ SceneRoots:
   - {fileID: 721620557}
   - {fileID: 355581230}
   - {fileID: 1248149471}
-  - {fileID: 1477013180}
   - {fileID: 1126399716}
-  - {fileID: 301165103}
+  - {fileID: 1472759083}

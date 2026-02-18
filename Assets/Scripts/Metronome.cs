@@ -1,11 +1,11 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 [RequireComponent(typeof(AudioSource))]
 public class Metronome : MonoBehaviour
 {
-
     public double bpm = 130.0F;
     public float gain = 0.5F;
     public int signatureHi = 4;
@@ -23,9 +23,7 @@ public class Metronome : MonoBehaviour
 
     private KeyManager km;
 
-    //Mandatory boolean, since we cant call functions from music thread
     private bool CreateCircle = false;
-    // Instantiate there, to not call them every tick
     double LeftToSpawn = 0.0;
     double UpToSpawn = 0.0;
     double DownToSpawn = 0.0;
@@ -37,7 +35,6 @@ public class Metronome : MonoBehaviour
     private int l = 0;
 
     private double tickPassed = 0.0;
-
 
     [Header("FeedBack and score")]
     public FeedBackSpawner spawner;
@@ -52,13 +49,13 @@ public class Metronome : MonoBehaviour
 
     public bool halfTickOffset = true;
     private const string CALIB_KEY = "CALIBRATION_MS";
+
     void Start()
     {
         km = KeyManager.Instance;
         calibrationMS = PlayerPrefs.GetFloat(CALIB_KEY, calibrationMS);
         accent = signatureHi;
         sampleRate = AudioSettings.outputSampleRate;
-        // delai pr eviter le decalage music de chiasse
         startDspTime = AudioSettings.dspTime + startOffsetSeconds;
         startSample = startDspTime * sampleRate;
         nextTick = startSample;
@@ -67,8 +64,7 @@ public class Metronome : MonoBehaviour
 
     void OnAudioFilterRead(float[] data, int channels)
     {
-        if (!running)
-            return;
+        if (!running) return;
 
         double samplesPerTick = sampleRate * 60.0F / bpm * 4.0F / signatureLo;
         double sample = AudioSettings.dspTime * sampleRate;
@@ -92,128 +88,114 @@ public class Metronome : MonoBehaviour
                     accent = 1;
                     amp *= 2.0F;
                 }
-                // Debug.Log("Tick: " + accent + "/" + signatureHi);
             }
             phase += amp * 0.3F;
             amp *= 0.993F;
             n++;
         }
-
     }
 
     void Update()
     {
-        var Input1 = Keyboard.current;
-        if (Input1 == null) return;
+        var inputDevice = Keyboard.current;
+        if (inputDevice == null || km == null || km.settings == null) return;
+
+        var leftKey = inputDevice[km.settings.keyLeft] as KeyControl;
+        var upKey = inputDevice[km.settings.keyUp] as KeyControl;
+        var downKey = inputDevice[km.settings.keyDown] as KeyControl;
+        var rightKey = inputDevice[km.settings.keyRight] as KeyControl;
+
         bool AnyDirectionPressed()
         {
-            return Input1.dKey.wasPressedThisFrame ||
-                   Input1.fKey.wasPressedThisFrame ||
-                   Input1.jKey.wasPressedThisFrame ||
-                   Input1.kKey.wasPressedThisFrame;
+            return (leftKey != null && leftKey.wasPressedThisFrame) ||
+                   (upKey != null && upKey.wasPressedThisFrame) ||
+                   (downKey != null && downKey.wasPressedThisFrame) ||
+                   (rightKey != null && rightKey.wasPressedThisFrame);
         }
+
         if (AnyDirectionPressed())
         {
-            if (Input1.dKey.wasPressedThisFrame)
+            if (leftKey != null && leftKey.wasPressedThisFrame)
             {
                 for (int i = 0; i < km.getNextLeft(100); i++)
                 {
-                    if (tickPassed == km.getNextLeft(i))
-                    {
-                        Scorer();
-                        break;
-                    }
+                    if (tickPassed == km.getNextLeft(i)) { Scorer(); break; }
                 }
             }
-            if (Input1.fKey.wasPressedThisFrame)
+            if (upKey != null && upKey.wasPressedThisFrame)
             {
                 for (int i = 0; i < km.getNextUp(100); i++)
                 {
-                    if (tickPassed == km.getNextUp(i))
-                    {
-                        Scorer();
-                        break;
-                    }
+                    if (tickPassed == km.getNextUp(i)) { Scorer(); break; }
                 }
             }
-            if (Input1.jKey.wasPressedThisFrame)
+            if (downKey != null && downKey.wasPressedThisFrame)
             {
                 for (int i = 0; i < km.getNextDown(100); i++)
                 {
-                    if (tickPassed == km.getNextDown(i))
-                    {
-                        Scorer();
-                        break;
-                    }
+                    if (tickPassed == km.getNextDown(i)) { Scorer(); break; }
                 }
             }
-            if (Input1.kKey.wasPressedThisFrame)
+            if (rightKey != null && rightKey.wasPressedThisFrame)
             {
                 for (int i = 0; i < km.getNextRight(100); i++)
                 {
-                    if (tickPassed == km.getNextRight(i))
-                    {
-                        Scorer();
-                        break;
-                    }
+                    if (tickPassed == km.getNextRight(i)) { Scorer(); break; }
                 }
             }
-
         }
-
     }
+
+    public void SetCalibration(float val, bool save = true)
+    {
+        calibrationMS = val;
+        if (save) PlayerPrefs.SetFloat(CALIB_KEY, val);
+    }
+
     public void Scorer()
     {
-        //Get the number of samples per tick
         double samplesPerTick = sampleRate * 60.0F / bpm * 4.0F / signatureLo;
-        //each frame, get the current sample (sample of the current frame)
         double currentSampleAbs = (AudioSettings.dspTime - calibrationMS / 1000.0) * sampleRate;
-        // 2h j'en ai marre
-        // calc pos dans le beat
-        //sample relatif (start)
         double sampleSinceStart = currentSampleAbs - startSample;
-        // si startDspTime+0.1 pressed passé
         if (sampleSinceStart < 0) return;
 
-        //fix decalage de moitié
         if (halfTickOffset) sampleSinceStart += samplesPerTick * 0.5f;
 
-        // modulo de check (anti decalage en principe)
         double withinTick = sampleSinceStart % samplesPerTick;
         if (withinTick < 0) withinTick += samplesPerTick;
-        // fix inversement (horrible)
+        
         double signedErrorSamples = withinTick;
-        if (withinTick > samplesPerTick * 0.5) signedErrorSamples = withinTick - samplesPerTick; // inversement (+ = -)
+        if (withinTick > samplesPerTick * 0.5) signedErrorSamples = withinTick - samplesPerTick;
+        
         float signedErrorMs = (float)(signedErrorSamples / sampleRate * 1000.0f);
         float absMs = Mathf.Abs(signedErrorMs);
-        // early / late (en + pr "nice", les too early et trucs sont les "ok")
         bool isEarly = signedErrorMs < 0f;
-        // debug reglage
-        Debug.Log($"errMs={signedErrorMs:+0.0;-0.0;0.0} abs={absMs:0.0}");
+
         if (absMs <= perfectMs)
         {
             spawner?.ShowPerfect();
             scoreManager?.AddPoints(5);
-            Debug.Log("Perfect");
+            pulseCircle?.PulsePerfect();
         }
         else if (absMs <= niceMs)
         {
             spawner?.ShowNice();
             scoreManager?.AddPoints(3);
-            Debug.Log(isEarly ? "Early" : "Late");
+            pulseCircle?.PulseNice();
         }
         else if (absMs <= okMs)
         {
             spawner?.ShowOK();
             scoreManager?.AddPoints(1);
-            Debug.Log(isEarly ? "TooEarly" : "TooLate");
+            pulseCircle?.PulseOk();
         }
         else
         {
             spawner?.ShowBad();
-            Debug.Log("Bad");
+            pulseCircle?.PulseBad();
         }
     }
+
     void FixedUpdate()
     {
         double samplesPerTick = sampleRate * 60.0F / bpm * 4.0F / signatureLo;
@@ -224,6 +206,7 @@ public class Metronome : MonoBehaviour
         double timeUntilHit = 6 * tickDuration;
         double distanceToTravel = 10f - (-3.5f);
         double speed = distanceToTravel / timeUntilHit;
+
         if (tickPassed == 1)
         {
             LeftToSpawn = km.getNextLeft(i);
@@ -232,45 +215,11 @@ public class Metronome : MonoBehaviour
             RightToSpawn = km.getNextRight(i);
         }
 
-        if (km == null) { Debug.Log("KeyManager is null"); return; }
-        Debug.Log($"Next Left: {LeftToSpawn}, Next Up: {UpToSpawn}, Next Down: {DownToSpawn}, Next Right: {RightToSpawn}");
-        if (tickPassed + 6 == LeftToSpawn)
-        {
-            i++;
-            Debug.Log("Spawning left circle...");
-            km.SpawnLeft(speed);
-            LeftToSpawn = km.getNextLeft(i);
-        }
-        if (tickPassed + 6 == UpToSpawn)
-        {
-            j++;
-            Debug.Log("Spawning up circle...");
-            km.SpawnUp(speed);
-            UpToSpawn = km.getNextUp(j);
-        }
-        if (tickPassed + 6 == DownToSpawn)
-        {
-            k++;
-            Debug.Log("Spawning down circle...");
-            km.SpawnDown(speed);
-            DownToSpawn = km.getNextDown(k);
-        }
-        if (tickPassed + 6 == RightToSpawn)
-        {
-            l++;
-            Debug.Log("Spawning right circle...");
-            km.SpawnRight(speed);
-            RightToSpawn = km.getNextRight(l);
-        }
-    }
-
-    public void SetCalibration(float ms, bool save = true)
-    {
-        calibrationMS = ms;
-        if (save)
-        {
-            PlayerPrefs.SetFloat(CALIB_KEY, calibrationMS);
-            PlayerPrefs.Save();
-        }
+        if (km == null) return;
+        
+        if (tickPassed + 6 == LeftToSpawn) { i++; km.SpawnLeft(speed); LeftToSpawn = km.getNextLeft(i); }
+        if (tickPassed + 6 == UpToSpawn) { j++; km.SpawnUp(speed); UpToSpawn = km.getNextUp(j); }
+        if (tickPassed + 6 == DownToSpawn) { k++; km.SpawnDown(speed); DownToSpawn = km.getNextDown(k); }
+        if (tickPassed + 6 == RightToSpawn) { l++; km.SpawnRight(speed); RightToSpawn = km.getNextRight(l); }
     }
 }

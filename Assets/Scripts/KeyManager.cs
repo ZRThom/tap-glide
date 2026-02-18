@@ -1,11 +1,15 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls; // Ajouté pour KeyControl
 using System.Collections.Generic;
 
 public class KeyManager : MonoBehaviour
 {
     public static KeyManager Instance { get; private set; }
+    
+    [SerializeField] public CustomSettings settings;
+
     [SerializeField]
     private GameObject left;
 
@@ -38,51 +42,47 @@ public class KeyManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    //get the preset keys and colors;
     void Start()
     {
-
+        if (settings != null) {
+            settings.LoadSettings();
+            Debug.Log("Touches chargées depuis le JSON");
+        }
     }
 
     void Update()
     {
         var Input = Keyboard.current;
-        if (Input == null) return;
-        if (Input.dKey.wasPressedThisFrame)
-        {
-            left.GetComponent<Renderer>().material.color = Color.red;
-        }
-        if (Input.fKey.wasPressedThisFrame)
-        {
-            up.GetComponent<Renderer>().material.color = Color.green;
-        }
-        if (Input.jKey.wasPressedThisFrame)
-        {
-            down.GetComponent<Renderer>().material.color = Color.blue;
-        }
-        if (Input.kKey.wasPressedThisFrame)
-        {
-            right.GetComponent<Renderer>().material.color = Color.yellow;
+        if (Input == null || settings == null) return;
+
+        var leftKey = Input[settings.keyLeft] as KeyControl;
+        if (leftKey != null) {
+            if (leftKey.wasPressedThisFrame) left.GetComponent<Renderer>().material.color = Color.red;
+            if (leftKey.wasReleasedThisFrame) left.GetComponent<Renderer>().material.color = Color.white;
         }
 
-        if (Input.dKey.wasReleasedThisFrame)
-        {
-            left.GetComponent<Renderer>().material.color = Color.white;
+        var upKey = Input[settings.keyUp] as KeyControl;
+        if (upKey != null) {
+            if (upKey.wasPressedThisFrame) up.GetComponent<Renderer>().material.color = Color.green;
+            if (upKey.wasReleasedThisFrame) up.GetComponent<Renderer>().material.color = Color.white;
         }
-        if (Input.fKey.wasReleasedThisFrame)
-        {
-            up.GetComponent<Renderer>().material.color = Color.white;
+
+        var downKey = Input[settings.keyDown] as KeyControl;
+        if (downKey != null) {
+            if (downKey.wasPressedThisFrame) down.GetComponent<Renderer>().material.color = Color.blue;
+            if (downKey.wasReleasedThisFrame) down.GetComponent<Renderer>().material.color = Color.white;
         }
-        if (Input.jKey.wasReleasedThisFrame)
-        {
-            down.GetComponent<Renderer>().material.color = Color.white;
-        }
-        if (Input.kKey.wasReleasedThisFrame)
-        {
-            right.GetComponent<Renderer>().material.color = Color.white;
+
+        var rightKey = Input[settings.keyRight] as KeyControl;
+        if (rightKey != null) {
+            if (rightKey.wasPressedThisFrame) right.GetComponent<Renderer>().material.color = Color.yellow;
+            if (rightKey.wasReleasedThisFrame) right.GetComponent<Renderer>().material.color = Color.white;
         }
     }
-
+    public void SpawnLeft(double speed) { Spawn(speed, "left"); }
+    public void SpawnUp(double speed) { Spawn(speed, "up"); }
+    public void SpawnDown(double speed) { Spawn(speed, "down"); }
+    public void SpawnRight(double speed) { Spawn(speed, "right"); }
 
     public double getNextLeft(int index)
     {
@@ -157,36 +157,29 @@ public class KeyManager : MonoBehaviour
         rightQueue.Add(queue);
     }
 
-    public void SpawnLeft(double speed)
+    public void Spawn(double speed, string direction)
     {
-        GameObject circle = Instantiate(Circle, new Vector2(-2.25f, 10f), Quaternion.identity);
+        float xPos = 0f;
+        switch (direction)
+        {
+            case "left":
+                xPos = -2.25f;
+                break;
+            case "up":
+                xPos = -0.75f;
+                break;
+            case "down":
+                xPos = 0.75f;
+                break;
+            case "right":
+                xPos = 2.25f;
+                break;
+        }
+
+        GameObject circle = Instantiate(Circle, new Vector2(xPos, 10f), Quaternion.identity);
         CircleMovement movement = circle.GetComponent<CircleMovement>();
         movement.spawnDspTime = AudioSettings.dspTime;
         movement.speed = (float)speed;
     }
-
-    public void SpawnUp(double speed)
-    {
-        GameObject circle = Instantiate(Circle, new Vector2(-0.75f, 10f), Quaternion.identity);
-        CircleMovement movement = circle.GetComponent<CircleMovement>();
-        movement.spawnDspTime = AudioSettings.dspTime;
-        movement.speed = (float)speed;
-    }
-
-    public void SpawnDown(double speed)
-    {
-        GameObject circle = Instantiate(Circle, new Vector2(0.75f, 10f), Quaternion.identity);
-
-        CircleMovement movement = circle.GetComponent<CircleMovement>();
-        movement.spawnDspTime = AudioSettings.dspTime;
-        movement.speed = (float)speed;
-    }
-
-    public void SpawnRight(double speed)
-    {
-        GameObject circle = Instantiate(Circle, new Vector2(2.25f, 10f), Quaternion.identity);
-        CircleMovement movement = circle.GetComponent<CircleMovement>();
-        movement.spawnDspTime = AudioSettings.dspTime;
-        movement.speed = (float)speed;
-    }
+    
 }
