@@ -111,7 +111,7 @@ public class Metronome : MonoBehaviour
             float absMs = Mathf.Abs(signedErrorMs);
             // early / late (en + pr "nice", les too early et trucs sont les "ok")
             bool isEarly = signedErrorMs < 0f;
-            // debug reglage
+            // debug reglage test 
             Debug.Log($"errMs={signedErrorMs:+0.0;-0.0;0.0} abs={absMs:0.0}");
 
             if (absMs <= perfectMs)
