@@ -7,7 +7,7 @@ public class Change_canvas : MonoBehaviour
     public GameObject menuPrincipal;
     public GameObject creditsCanvas;
     public GameObject settingsCanvas;
-    public GameObject gameSelectCanvas; 
+    public GameObject gameSelectCanvas;
     
     [Header("Panneaux de Niveaux (Scène de Jeu)")]
     public GameObject jeuCanvas;  
@@ -18,7 +18,6 @@ public class Change_canvas : MonoBehaviour
 
     void Start()
     {
-    
         if (!string.IsNullOrEmpty(canvasAActiver))
         {
             Debug.Log("Activation automatique de : " + canvasAActiver);
