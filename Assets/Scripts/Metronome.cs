@@ -88,7 +88,7 @@ public class Metronome : MonoBehaviour
             double samplesPerTick = sampleRate * 60.0F / bpm * 4.0F / signatureLo;
             //each frame, get the current sample (sample of the current frame)
             double currentSampleAbs = (AudioSettings.dspTime - calibrationMS / 1000.0) * sampleRate;
-            // 3h j'en ai marre
+            // 2h j'en ai marre
             // calc pos dans le beat
             //sample relatif (start)
             double sampleSinceStart = currentSampleAbs - startSample;
