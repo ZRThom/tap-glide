@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 42843192}
   - component: {fileID: 42843191}
   m_Layer: 5
-  m_Name: right (TMP)
+  m_Name: up (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -344,6 +344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b05c80291777b3a4f95770bfa9dd6f58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BG_LuminaManager
+  settings: {fileID: 0}
   slider: {fileID: 0}
 --- !u!1 &100012302
 GameObject:
@@ -380,10 +381,10 @@ RectTransform:
   - {fileID: 1114945948}
   m_Father: {fileID: 613642813}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1000, y: -100}
-  m_SizeDelta: {x: 200, y: 200}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &100012304
 MonoBehaviour:
@@ -807,10 +808,10 @@ RectTransform:
   - {fileID: 617808989}
   m_Father: {fileID: 1260856779}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 30, y: -25}
+  m_SizeDelta: {x: 60, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &211094084
 MonoBehaviour:
@@ -1271,10 +1272,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 248664574}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 50, y: -145}
+  m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &251927651
 MonoBehaviour:
@@ -2115,10 +2116,10 @@ RectTransform:
   - {fileID: 1419920931}
   m_Father: {fileID: 1260856779}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 30, y: -145}
+  m_SizeDelta: {x: 60, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &336504171
 MonoBehaviour:
@@ -2227,7 +2228,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RebindButton
   settings: {fileID: 11400000, guid: 252db8e738c764946ad7aedab10783f0, type: 2}
-  direction: up
+  direction: down
   buttonText: {fileID: 1419920932}
 --- !u!1 &348524582
 GameObject:
@@ -2355,7 +2356,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &376224540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2613,10 +2614,10 @@ RectTransform:
   - {fileID: 1786721388}
   m_Father: {fileID: 613642813}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -100}
-  m_SizeDelta: {x: 200, y: 200}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &431550046
 MonoBehaviour:
@@ -2874,7 +2875,7 @@ RectTransform:
   m_Father: {fileID: 158937399}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3680,7 +3681,7 @@ RectTransform:
   m_Father: {fileID: 556803830}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3756,10 +3757,10 @@ RectTransform:
   - {fileID: 693001012}
   m_Father: {fileID: 613642813}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 400, y: -100}
-  m_SizeDelta: {x: 200, y: 200}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &669783360
 MonoBehaviour:
@@ -5114,7 +5115,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &871816912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5254,6 +5255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b05c80291777b3a4f95770bfa9dd6f58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BG_LuminaManager
+  settings: {fileID: 0}
   slider: {fileID: 0}
 --- !u!1 &928578340
 GameObject:
@@ -5958,7 +5960,7 @@ RectTransform:
   m_Father: {fileID: 1181444045}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -6888,10 +6890,10 @@ RectTransform:
   - {fileID: 381268408}
   m_Father: {fileID: 613642813}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 700, y: -100}
-  m_SizeDelta: {x: 200, y: 200}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1219327796
 MonoBehaviour:
@@ -7255,10 +7257,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 248664574}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 50, y: -85}
+  m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1283562494
 MonoBehaviour:
@@ -7392,10 +7394,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 248664574}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 50, y: -25}
+  m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1284189785
 MonoBehaviour:
@@ -7991,7 +7993,7 @@ RectTransform:
   m_Father: {fileID: 1565107067}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -8326,7 +8328,7 @@ GameObject:
   - component: {fileID: 1419920933}
   - component: {fileID: 1419920932}
   m_Layer: 5
-  m_Name: left (TMP)
+  m_Name: down (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8650,6 +8652,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b05c80291777b3a4f95770bfa9dd6f58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BG_LuminaManager
+  settings: {fileID: 11400000, guid: 252db8e738c764946ad7aedab10783f0, type: 2}
   slider: {fileID: 0}
 --- !u!1 &1664641545
 GameObject:
@@ -8839,10 +8842,10 @@ RectTransform:
   - {fileID: 42843190}
   m_Father: {fileID: 1260856779}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 30, y: -85}
+  m_SizeDelta: {x: 60, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1665754338
 MonoBehaviour:
@@ -9423,6 +9426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b05c80291777b3a4f95770bfa9dd6f58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BG_LuminaManager
+  settings: {fileID: 0}
   slider: {fileID: 0}
 --- !u!1 &1716918265
 GameObject:
@@ -10155,8 +10159,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -248, y: -41}
-  m_SizeDelta: {x: 253.6671, y: 78.1113}
+  m_AnchoredPosition: {x: -65.762695, y: -60.1828}
+  m_SizeDelta: {x: 618.1416, y: 116.477}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1833916424
 MonoBehaviour:
@@ -10178,7 +10182,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: " Background                 \n  Luminosity "
+  m_text: " Background                 \n  Luminosity \n(Only in Levels)"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f287d4ec48d06846a184f56dfc1d0aa, type: 2}
   m_sharedMaterial: {fileID: -3518640785379252041, guid: 8f287d4ec48d06846a184f56dfc1d0aa, type: 2}
@@ -10742,10 +10746,10 @@ RectTransform:
   - {fileID: 1298891854}
   m_Father: {fileID: 1260856779}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 30, y: -205}
+  m_SizeDelta: {x: 60, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1928018437
 MonoBehaviour:
@@ -11377,6 +11381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b05c80291777b3a4f95770bfa9dd6f58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BG_LuminaManager
+  settings: {fileID: 0}
   slider: {fileID: 0}
 --- !u!1 &2076379239
 GameObject:
@@ -11547,10 +11552,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 248664574}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 50, y: -205}
+  m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2128580567
 MonoBehaviour:

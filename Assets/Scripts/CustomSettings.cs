@@ -10,24 +10,21 @@ public class CustomSettings : ScriptableObject
     public string keyUp = "f";
     public string keyDown = "j";
     public string keyRight = "k";
+    
+    public float bgBrightness = 1f;
 
     private string SavePath => Application.persistentDataPath + "/controls.json";
 
-    public static CustomSettings Load()
-    {
-        return Resources.Load<CustomSettings>("CustomSettings");
-    }
+    public static CustomSettings Load() => Resources.Load<CustomSettings>("CustomSettings");
 
 #if UNITY_EDITOR
-    public static UnityEditor.SerializedObject SerializedSettings()
-    {
-        return new UnityEditor.SerializedObject(Load());
-    }
+    public static UnityEditor.SerializedObject SerializedSettings() => new UnityEditor.SerializedObject(Load());
 #endif
 
     public void SaveSettings() {
         SaveData data = new SaveData {
-            left = keyLeft, up = keyUp, down = keyDown, right = keyRight
+            left = keyLeft, up = keyUp, down = keyDown, right = keyRight,
+            brightness = bgBrightness
         };
         File.WriteAllText(SavePath, JsonUtility.ToJson(data));
     }
@@ -37,9 +34,13 @@ public class CustomSettings : ScriptableObject
             string json = File.ReadAllText(SavePath);
             SaveData data = JsonUtility.FromJson<SaveData>(json);
             keyLeft = data.left; keyUp = data.up; keyDown = data.down; keyRight = data.right;
+            bgBrightness = data.brightness;
         }
     }
 
     [System.Serializable]
-    private class SaveData { public string left, up, down, right; }
+    private class SaveData { 
+        public string left, up, down, right; 
+        public float brightness;
+    }
 }
