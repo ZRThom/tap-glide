@@ -102,7 +102,7 @@ public class Metronome : MonoBehaviour
         if (keyboard == null) return;
 
         //Pour la calibration 
-        if(keyboard.spaceKey.wasPressedThisFrame)
+        if(Change_canvas.IsCalibrationActive && keyboard.spaceKey.wasPressedThisFrame)
         {
             Debug.Log("Calibration reset");
             Scorer();
