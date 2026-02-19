@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class Change_canvas : MonoBehaviour
 {
@@ -15,6 +16,13 @@ public class Change_canvas : MonoBehaviour
     public GameObject level3Canvas;
     public GameObject LvlCalibrage;
     
+    public GameObject CanvasKey;
+    [Header("Fade")]
+    [SerializeField] private CanvasGroup fader;
+    [SerializeField] private float fadeDuration = 1f;
+    private bool isTransitioning = false;
+    private static bool pendingFadeIn = false;
+
     private static string canvasAActiver = "";
     public static bool IsCalibrationActive { get; private set;  }
 
@@ -24,6 +32,22 @@ public class Change_canvas : MonoBehaviour
         {
             AppliquerAffichage(canvasAActiver);
             canvasAActiver = "";
+        }
+
+        if (fader != null)
+        {
+            if (pendingFadeIn)
+            {
+                fader.alpha = 1f;
+                fader.blocksRaycasts = true;
+                pendingFadeIn = false;
+                StartCoroutine(Fade(1f, 0f, fadeDuration));
+            }
+            else
+            {
+                fader.alpha = 0f;
+                fader.blocksRaycasts = false;
+            }
         }
     }
 
@@ -35,12 +59,12 @@ public class Change_canvas : MonoBehaviour
         {
             string[] parts = instruction.Split(':');
             string nomScene = parts[0].Trim();
-            canvasAActiver = parts[1].Trim();
-            SceneManager.LoadScene(nomScene);
+            string canvas = parts[1].Trim();
+            StartCoroutine(FadeLoadScene(nomScene, canvas));
         }
         else
         {
-            SceneManager.LoadScene(instruction.Trim());
+            StartCoroutine(FadeLoadScene(instruction.Trim(), ""));
         }
     }
 
@@ -48,10 +72,48 @@ public class Change_canvas : MonoBehaviour
     public void AfficherCredits()    => AppliquerAffichage("Credits");
     public void AfficherSettings()   => AppliquerAffichage("Settings");
     public void AfficherGameSelect() => AppliquerAffichage("Canvas Game_select");
-    public void AfficherLevel1()     => AppliquerAffichage("Level 1");
-    public void AfficherLevel2()     => AppliquerAffichage("Level 2");
-    public void AfficherLevel3()     => AppliquerAffichage("Level 3");
-    public void AfficherCalibrage() => AppliquerAffichage("Calibrage");
+    public void AfficherLevel1()     => StartCoroutine(FadeSwitch("Level 1"));
+    public void AfficherLevel2()     => StartCoroutine(FadeSwitch("Level 2"));
+    public void AfficherLevel3()     => StartCoroutine(FadeSwitch("Level 3"));
+    public void AfficherCalibrage()  => StartCoroutine(FadeSwitch("Calibrage"));
+
+    private IEnumerator FadeSwitch(string canvasName)
+    {
+        if (isTransitioning) yield break;
+        isTransitioning = true;
+        yield return Fade(0f, 1f, fadeDuration);
+        AppliquerAffichage(canvasName);
+        yield return null;
+        yield return Fade(1f, 0f, fadeDuration);
+        isTransitioning = false;
+    }
+
+    private IEnumerator Fade(float from, float to, float duration)
+    {
+        if (fader == null) yield break;
+        fader.blocksRaycasts = true;
+        fader.alpha = from;
+
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.unscaledDeltaTime;
+            fader.alpha = Mathf.Lerp(from, to, t / duration);
+            yield return null;
+        }
+        fader.alpha = to;
+        fader.blocksRaycasts = (to > 0.001f);
+    }
+
+    private IEnumerator FadeLoadScene(string sceneName, string canvasName)
+    {
+        if (isTransitioning) yield break;
+        isTransitioning = true;
+        if (fader != null) yield return Fade(0f, 1f, fadeDuration);
+        canvasAActiver = canvasName;
+        pendingFadeIn = true;
+        SceneManager.LoadScene(sceneName);
+    }
 
     private void AppliquerAffichage(string nom)
     {
@@ -63,6 +125,7 @@ public class Change_canvas : MonoBehaviour
         if(level2Canvas)     level2Canvas.SetActive(false);
         if(level3Canvas)     level3Canvas.SetActive(false);
         if(LvlCalibrage)     LvlCalibrage.SetActive(false);
+        if (CanvasKey) CanvasKey.SetActive(true);
 
         IsCalibrationActive = false;
 

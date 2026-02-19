@@ -7,6 +7,12 @@ using System.Collections.Generic;
 public class KeyManager : MonoBehaviour
 {
     public static KeyManager Instance { get; private set; }
+
+    public Sprite spriteBase;
+    public Sprite spriteLeft;
+    public Sprite spriteDown;
+    public Sprite spriteUp;
+    public Sprite spriteRight;
     
     [SerializeField] public CustomSettings settings;
 
@@ -54,36 +60,41 @@ public class KeyManager : MonoBehaviour
             settings.LoadSettings();
             Debug.Log("Touches chargées depuis le JSON");
         }
+        setBase(left);
+        setBase(up);
+        setBase(down);
+        setBase(right);
+    }
+
+    private void setBase(GameObject obj)
+    {
+        if (obj == null) return;
+        var sr = obj.GetComponent<SpriteRenderer>();
+        if (sr != null && spriteBase != null) sr.sprite = spriteBase;
     }
 
     void Update()
     {
-        var Input = Keyboard.current;
-        if (Input == null || settings == null) return;
+        var Input1 = Keyboard.current;
+        if (Input1 == null || settings == null) return;
 
-        var leftKey = Input[settings.keyLeft] as KeyControl;
-        if (leftKey != null) {
-            if (leftKey.wasPressedThisFrame) left.GetComponent<Renderer>().material.color = Color.red;
-            if (leftKey.wasReleasedThisFrame) left.GetComponent<Renderer>().material.color = Color.white;
-        }
+        HandleSprite(left, Input1[settings.keyLeft] as KeyControl, spriteLeft);
+        HandleSprite(down, Input1[settings.keyDown] as KeyControl, spriteDown);
+        HandleSprite(up, Input1[settings.keyUp] as KeyControl, spriteUp);
+        HandleSprite(right, Input1[settings.keyRight] as KeyControl, spriteRight);
+    }
 
-        var upKey = Input[settings.keyUp] as KeyControl;
-        if (upKey != null) {
-            if (upKey.wasPressedThisFrame) up.GetComponent<Renderer>().material.color = Color.green;
-            if (upKey.wasReleasedThisFrame) up.GetComponent<Renderer>().material.color = Color.white;
+    public void HandleSprite(GameObject obj, KeyControl key, Sprite pressedSprite)
+    {
+        if (obj == null || key == null) return;
+        var sr = obj.GetComponent<SpriteRenderer>();
+        if (sr == null)
+        {
+            Debug.LogError($"{obj.name} don't have spriteRenderer");
+            return;
         }
-
-        var downKey = Input[settings.keyDown] as KeyControl;
-        if (downKey != null) {
-            if (downKey.wasPressedThisFrame) down.GetComponent<Renderer>().material.color = Color.blue;
-            if (downKey.wasReleasedThisFrame) down.GetComponent<Renderer>().material.color = Color.white;
-        }
-
-        var rightKey = Input[settings.keyRight] as KeyControl;
-        if (rightKey != null) {
-            if (rightKey.wasPressedThisFrame) right.GetComponent<Renderer>().material.color = Color.yellow;
-            if (rightKey.wasReleasedThisFrame) right.GetComponent<Renderer>().material.color = Color.white;
-        }
+        if (key.wasPressedThisFrame) sr.sprite = pressedSprite;
+        if (key.wasReleasedThisFrame) sr.sprite = spriteBase;
     }
     public void SpawnLeft(double speed) { Spawn(speed, "left"); }
     public void SpawnUp(double speed) { Spawn(speed, "up"); }
