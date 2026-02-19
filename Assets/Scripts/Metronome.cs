@@ -110,11 +110,13 @@ public class Metronome : MonoBehaviour
         void HandleKey(KeyControl key, Func<int, double> getNext)
         {
             if(!key.wasPressedThisFrame) return;
+
             for(int i = 0; i < getNext(100); i++)
             {
-                if (tickPassed == getNext(i))
+                //If we are within 1 tick of the supposed tick, we count it as a hit.
+                if (tickPassed == getNext(i) || tickPassed + 1 == getNext(i) || tickPassed - 1 == getNext(i))
                 {
-                    Scorer();
+                    Scorer(getNext(i));
                     Debug.Log("Clicked at tick " + tickPassed);
                     Debug.Log("Supposed click was at tick " + getNext(i));
                     break;
@@ -138,7 +140,7 @@ public class Metronome : MonoBehaviour
         if (save) PlayerPrefs.SetFloat(CALIB_KEY, val);
     }
 
-    public void Scorer()
+    public void Scorer(double supposedTick = -1)
     {
         double samplesPerTick = sampleRate * 60.0F / bpm * 4.0F / signatureLo;
         double currentSampleAbs = (AudioSettings.dspTime - calibrationMS / 1000.0) * sampleRate;
@@ -157,29 +159,44 @@ public class Metronome : MonoBehaviour
         float absMs = Mathf.Abs(signedErrorMs);
         bool isEarly = signedErrorMs < 0f;
 
+        if(supposedTick != -1)
+        {
+            Debug.Log("Error in ms: " + signedErrorMs);
+            Debug.Log("Error in samples: " + signedErrorSamples);
+            Debug.Log(withinTick + " samples since last tick. ");
+        }
+
         if (absMs <= perfectMs)
         {
             spawner?.ShowPerfect();
             scoreManager?.AddPoints(5);
             pulseCircle?.PulsePerfect();
+            Debug.Log("Perfect hit!");
+            //Detruire le cercle
         }
         else if (absMs <= niceMs)
         {
             spawner?.ShowNice();
             scoreManager?.AddPoints(3);
             pulseCircle?.PulseNice();
+            Debug.Log("Nice hit!");
+            //Detruire le cercle
         }
         else if (absMs <= okMs)
         {
             spawner?.ShowOK();
             scoreManager?.AddPoints(1);
             pulseCircle?.PulseOk();
+            Debug.Log("OK hit!");
+            //Detruire le cercle
         }
         else
         {
             spawner?.ShowBad();
             scoreManager?.AddPoints(-3);
             pulseCircle?.PulseBad();
+            Debug.Log("Bad hit!");
+            //Ne pas detruire le cercle
         }
     }
 
