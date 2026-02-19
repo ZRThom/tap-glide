@@ -1,8 +1,9 @@
 using UnityEngine;
-using System; 
+using System;
 using System.Collections;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(AudioSource))]
 public class Metronome : MonoBehaviour
@@ -102,36 +103,95 @@ public class Metronome : MonoBehaviour
         if (keyboard == null) return;
 
         //Pour la calibration 
-        if(Change_canvas.IsCalibrationActive && keyboard.spaceKey.wasPressedThisFrame)
-        {
-            Debug.Log("Calibration reset");
-            Scorer();
-        }
-        void HandleKey(KeyControl key, Func<int, double> getNext)
-        {
-            if(!key.wasPressedThisFrame) return;
+        /* if (Change_canvas.IsCalibrationActive && keyboard.spaceKey.wasPressedThisFrame)
+         {
+             Debug.Log("Calibration reset");
+             Scorer();
+         }*/
 
-            for(int i = 0; i < getNext(100); i++)
+        void HandleKey(KeyControl key, Func<int, double> getNext, string direction)
+        {
+            if (key == null || !key.wasPressedThisFrame || getNext(100) == 0) return;
+            double nextDouble = getNext(0);
+            Debug.Log("Next " + direction + " tick: " + nextDouble);
+            //If we are within 1 tick of the supposed tick, we count it as a hit.
+            if (Math.Abs(tickPassed - nextDouble) <= 1)
             {
-                //If we are within 1 tick of the supposed tick, we count it as a hit.
-                if (tickPassed == getNext(i) || tickPassed + 1 == getNext(i) || tickPassed - 1 == getNext(i))
+                List<GameObject> currentQueue = null;
+                List<double> queue = null;
+                switch (direction)
                 {
-                    Scorer(getNext(i));
-                    Debug.Log("Clicked at tick " + tickPassed);
-                    Debug.Log("Supposed click was at tick " + getNext(i));
-                    break;
+                    case "left":
+                        currentQueue = km.currentLeftQueue;
+                        queue = km.leftQueue;
+                        break;
+                    case "up":
+                        currentQueue = km.currentUpQueue;
+                        queue = km.upQueue;
+                        break;
+                    case "down":
+                        currentQueue = km.currentDownQueue;
+                        queue = km.downQueue;
+                        break;
+                    case "right":
+                        currentQueue = km.currentRightQueue;
+                        queue = km.rightQueue;
+                        break;
                 }
+                Scorer(nextDouble, currentQueue, queue);
+                Debug.Log("Clicked at tick " + tickPassed);
+            }
+            else
+            {
+                Debug.Log("Clicked at tick " + tickPassed + " but expected " + nextDouble);
             }
         }
+
         var leftKey = keyboard[km.settings.keyLeft] as KeyControl;
         var upKey = keyboard[km.settings.keyUp] as KeyControl;
         var downKey = keyboard[km.settings.keyDown] as KeyControl;
         var rightKey = keyboard[km.settings.keyRight] as KeyControl;
-        HandleKey(leftKey, km.getNextLeft);
-        HandleKey(upKey, km.getNextUp);
-        HandleKey(downKey, km.getNextDown);
-        HandleKey(rightKey, km.getNextRight);
+        HandleKey(leftKey, km.getNextLeft, "left");
+        HandleKey(upKey, km.getNextUp, "up");
+        HandleKey(downKey, km.getNextDown, "down");
+        HandleKey(rightKey, km.getNextRight, "right");
 
+        void CleanUpMissedNotes()
+        {
+            // Check all 4 directions. 
+            // If the tick in the logic queue is more than 1.5 ticks behind the current time, 
+            // it means the note has flown past the hit zone and we missed it.
+
+            CheckDirectionMiss(km.leftQueue, km.currentLeftQueue);
+            CheckDirectionMiss(km.upQueue, km.currentUpQueue);
+            CheckDirectionMiss(km.downQueue, km.currentDownQueue);
+            CheckDirectionMiss(km.rightQueue, km.currentRightQueue);
+        }
+
+        void CheckDirectionMiss(List<double> logicQueue, List<GameObject> visualQueue)
+        {
+            // Use a while loop in case multiple notes were missed in a row
+            while (logicQueue.Count > 0 && tickPassed > logicQueue[0] + 1.2)
+            {
+                Debug.Log("Missed note at tick " + logicQueue[0]);
+
+                // 1. Remove from time list
+                logicQueue.RemoveAt(0);
+
+                // 2. Remove and destroy the actual circle
+                if (visualQueue.Count > 0)
+                {
+                    GameObject note = visualQueue[0];
+                    visualQueue.RemoveAt(0);
+                    Destroy(note);
+                }
+
+                // 3. Optional: Trigger a "Miss" UI/Sound
+                spawner?.ShowBad();
+            }
+        }
+
+        CleanUpMissedNotes();
     }
 
     public void SetCalibration(float val, bool save = true)
@@ -140,7 +200,7 @@ public class Metronome : MonoBehaviour
         if (save) PlayerPrefs.SetFloat(CALIB_KEY, val);
     }
 
-    public void Scorer(double supposedTick = -1)
+    public void Scorer(double supposedTick, List<GameObject> currentQueue = null, List<double> queue = null)
     {
         double samplesPerTick = sampleRate * 60.0F / bpm * 4.0F / signatureLo;
         double currentSampleAbs = (AudioSettings.dspTime - calibrationMS / 1000.0) * sampleRate;
@@ -151,52 +211,55 @@ public class Metronome : MonoBehaviour
 
         double withinTick = sampleSinceStart % samplesPerTick;
         if (withinTick < 0) withinTick += samplesPerTick;
-        
+
         double signedErrorSamples = withinTick;
         if (withinTick > samplesPerTick * 0.5) signedErrorSamples = withinTick - samplesPerTick;
-        
+
         float signedErrorMs = (float)(signedErrorSamples / sampleRate * 1000.0f);
         float absMs = Mathf.Abs(signedErrorMs);
         bool isEarly = signedErrorMs < 0f;
 
-        if(supposedTick != -1)
-        {
-            Debug.Log("Error in ms: " + signedErrorMs);
-            Debug.Log("Error in samples: " + signedErrorSamples);
-            Debug.Log(withinTick + " samples since last tick. ");
-        }
-
+        // Judgement Logic
         if (absMs <= perfectMs)
         {
             spawner?.ShowPerfect();
             scoreManager?.AddPoints(5);
             pulseCircle?.PulsePerfect();
-            Debug.Log("Perfect hit!");
-            //Detruire le cercle
+            Debug.Log($"Perfect! Error: {signedErrorMs:F2}ms");
         }
         else if (absMs <= niceMs)
         {
             spawner?.ShowNice();
             scoreManager?.AddPoints(3);
             pulseCircle?.PulseNice();
-            Debug.Log("Nice hit!");
-            //Detruire le cercle
+            Debug.Log($"Nice! Error: {signedErrorMs:F2}ms");
         }
         else if (absMs <= okMs)
         {
             spawner?.ShowOK();
             scoreManager?.AddPoints(1);
             pulseCircle?.PulseOk();
-            Debug.Log("OK hit!");
-            //Detruire le cercle
+            Debug.Log($"OK! Error: {signedErrorMs:F2}ms");
         }
         else
         {
             spawner?.ShowBad();
             scoreManager?.AddPoints(-3);
             pulseCircle?.PulseBad();
-            Debug.Log("Bad hit!");
-            //Ne pas detruire le cercle
+            Debug.Log($"Bad/Late! Error: {signedErrorMs:F2}ms");
+        }
+
+        // 5. Cleanup (Essential to keep the game from stopping)
+        if (currentQueue != null && currentQueue.Count > 0)
+        {
+            var noteObj = currentQueue[0];
+            currentQueue.RemoveAt(0);
+            Destroy(noteObj);
+        }
+
+        if (queue != null && queue.Count > 0)
+        {
+            queue.RemoveAt(0);
         }
     }
 
@@ -220,10 +283,10 @@ public class Metronome : MonoBehaviour
         }
 
         if (km == null) return;
-        
-        if (tickPassed + 6 == LeftToSpawn) { i++; km.Spawn(speed, "left"); LeftToSpawn = km.getNextLeft(i); }
-        if (tickPassed + 6 == UpToSpawn) { j++; km.Spawn(speed, "up"); UpToSpawn = km.getNextUp(j); }
-        if (tickPassed + 6 == DownToSpawn) { k++; km.Spawn(speed, "down"); DownToSpawn = km.getNextDown(k); }
-        if (tickPassed + 6 == RightToSpawn) { l++; km.Spawn(speed, "right"); RightToSpawn = km.getNextRight(l); }
+
+        if (tickPassed + 6 >= LeftToSpawn) { i++; km.Spawn(speed, "left"); LeftToSpawn = km.getNextLeft(i); }
+        if (tickPassed + 6 >= UpToSpawn) { j++; km.Spawn(speed, "up"); UpToSpawn = km.getNextUp(j); }
+        if (tickPassed + 6 >= DownToSpawn) { k++; km.Spawn(speed, "down"); DownToSpawn = km.getNextDown(k); }
+        if (tickPassed + 6 >= RightToSpawn) { l++; km.Spawn(speed, "right"); RightToSpawn = km.getNextRight(l); }
     }
 }

@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls; 
 using System.Collections.Generic;
 
+
+
 public class KeyManager : MonoBehaviour
 {
     public static KeyManager Instance { get; private set; }
@@ -25,10 +27,14 @@ public class KeyManager : MonoBehaviour
     [SerializeField]
     private GameObject Circle;
 
-    private List<double> leftQueue = new List<double>();
-    private List<double> upQueue = new List<double>();
-    private List<double> downQueue = new List<double>();
-    private List<double> rightQueue = new List<double>();
+    public List<double> leftQueue = new List<double>();
+    public List<double> upQueue = new List<double>();
+    public List<double> downQueue = new List<double>();
+    public List<double> rightQueue = new List<double>();
+    public List<GameObject> currentLeftQueue = new List<GameObject>();
+    public List<GameObject> currentUpQueue = new List<GameObject>();
+    public List<GameObject> currentDownQueue = new List<GameObject>();
+    public List<GameObject> currentRightQueue = new List<GameObject>();
 
     private void Awake()
     {
@@ -79,11 +85,6 @@ public class KeyManager : MonoBehaviour
             if (rightKey.wasReleasedThisFrame) right.GetComponent<Renderer>().material.color = Color.white;
         }
     }
-    public void SpawnLeft(double speed) { Spawn(speed, "left"); }
-    public void SpawnUp(double speed) { Spawn(speed, "up"); }
-    public void SpawnDown(double speed) { Spawn(speed, "down"); }
-    public void SpawnRight(double speed) { Spawn(speed, "right"); }
-
     public double getNextLeft(int index)
     {
         if (leftQueue.Count > index)
@@ -137,6 +138,18 @@ public class KeyManager : MonoBehaviour
         }
     }
 
+    public void ClearQueues()
+    {
+        leftQueue.Clear();
+        upQueue.Clear();
+        downQueue.Clear();
+        rightQueue.Clear();
+        currentLeftQueue.Clear();
+        currentUpQueue.Clear();
+        currentDownQueue.Clear();
+        currentRightQueue.Clear();
+    }
+
     public void setLeftQueue(double Toqueue)
     {
         leftQueue.Add(Toqueue);
@@ -180,6 +193,26 @@ public class KeyManager : MonoBehaviour
         CircleMovement movement = circle.GetComponent<CircleMovement>();
         movement.spawnDspTime = AudioSettings.dspTime;
         movement.speed = (float)speed;
+        addQueue(direction, circle);
+    }
+
+    private void addQueue(string direction, GameObject Circle)
+    {
+        switch (direction)
+        {
+            case "left":
+                currentLeftQueue.Add(Circle);
+                break;
+            case "up":
+                currentUpQueue.Add(Circle);
+                break;
+            case "down":
+                currentDownQueue.Add(Circle);
+                break;
+            case "right":
+                currentRightQueue.Add(Circle);
+                break;
+        }
     }
     
 }
