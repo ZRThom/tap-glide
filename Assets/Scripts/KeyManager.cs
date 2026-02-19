@@ -30,6 +30,12 @@ public class KeyManager : MonoBehaviour
     private List<double> downQueue = new List<double>();
     private List<double> rightQueue = new List<double>();
 
+    // Track spawned circles for hit detection
+    private List<GameObject> spawnedCircles = new List<GameObject>();
+    
+    private const float HIT_ZONE_Y = -3.5f; // Position de la zone de hit visual
+    private const float HIT_TOLERANCE = 1.2f; // Y tolerance for hitting (covers Good range)
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -157,7 +163,7 @@ public class KeyManager : MonoBehaviour
         rightQueue.Add(queue);
     }
 
-    public void Spawn(double speed, string direction)
+    public void Spawn(double speed, string direction, double expectedTick = -1)
     {
         float xPos = 0f;
         switch (direction)
@@ -180,6 +186,69 @@ public class KeyManager : MonoBehaviour
         CircleMovement movement = circle.GetComponent<CircleMovement>();
         movement.spawnDspTime = AudioSettings.dspTime;
         movement.speed = (float)speed;
+        movement.direction = direction;
+        movement.expectedTick = expectedTick;
+        
+        spawnedCircles.Add(circle);
+    }
+
+    // Try to hit a circle in the specified direction and return its expected tick
+    public double TryHitCircle(string direction)
+    {
+        // Find the closest circle in the right direction and Y position
+        float targetX = 0f;
+        switch (direction)
+        {
+            case "left":
+                targetX = -2.25f;
+                break;
+            case "up":
+                targetX = -0.75f;
+                break;
+            case "down":
+                targetX = 0.75f;
+                break;
+            case "right":
+                targetX = 2.25f;
+                break;
+            default:
+                return -1;
+        }
+
+        GameObject targetCircle = null;
+        float closestDistance = float.MaxValue;
+        double hitExpectedTick = -1;
+
+        // Clean up destroyed circles and find the best target
+        spawnedCircles.RemoveAll(c => c == null);
+
+        foreach (GameObject circle in spawnedCircles)
+        {
+            CircleMovement cm = circle.GetComponent<CircleMovement>();
+            if (cm == null) continue;
+
+            // Check if it's in the correct direction
+            if (cm.direction != direction) continue;
+
+            // Check if it's in the hit zone
+            float circleY = circle.transform.position.y;
+            float distanceFromHitZone = Mathf.Abs(circleY - HIT_ZONE_Y);
+
+            if (distanceFromHitZone <= HIT_TOLERANCE && distanceFromHitZone < closestDistance)
+            {
+                closestDistance = distanceFromHitZone;
+                targetCircle = circle;
+                hitExpectedTick = cm.expectedTick;
+            }
+        }
+
+        if (targetCircle != null)
+        {
+            targetCircle.GetComponent<CircleMovement>().DestroyCircle();
+            return hitExpectedTick;
+        }
+
+        return -1;
     }
     
 }

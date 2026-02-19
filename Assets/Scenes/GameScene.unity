@@ -3706,7 +3706,7 @@ MonoBehaviour:
   niceMs: 90
   okMs: 135
   calibrationMS: 0
-  halfTickOffset: 1
+  halfTickOffset: 0
 --- !u!82 &1476913954
 AudioSource:
   m_ObjectHideFlags: 0
