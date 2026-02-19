@@ -99,7 +99,7 @@ public class Metronome : MonoBehaviour
     void Update()
     {
         var keyboard = Keyboard.current;
-        if (keyboard == null) return;
+        if (keyboard == null || km == null) return;
 
         //Pour la calibration 
         if(Change_canvas.IsCalibrationActive && keyboard.spaceKey.wasPressedThisFrame)
@@ -107,31 +107,27 @@ public class Metronome : MonoBehaviour
             Debug.Log("Calibration reset");
             Scorer();
         }
-        void HandleKey(KeyControl key, Func<int, double> getNext)
+
+        void HandleKey(KeyControl key, string direction)
         {
             if(!key.wasPressedThisFrame) return;
-
-            for(int i = 0; i < getNext(100); i++)
+            double expectedTick = km.TryHitCircle(direction);
+            if (expectedTick >= 0) // If a circle was hit
             {
-                //If we are within 1 tick of the supposed tick, we count it as a hit.
-                if (tickPassed == getNext(i) || tickPassed + 1 == getNext(i) || tickPassed - 1 == getNext(i))
-                {
-                    Scorer(getNext(i));
-                    Debug.Log("Clicked at tick " + tickPassed);
-                    Debug.Log("Supposed click was at tick " + getNext(i));
-                    break;
-                }
+                Scorer(expectedTick);
+                Debug.Log("Hit on " + direction + " - Expected tick: " + expectedTick + " - Current tick: " + tickPassed);
             }
         }
+
         var leftKey = keyboard[km.settings.keyLeft] as KeyControl;
         var upKey = keyboard[km.settings.keyUp] as KeyControl;
         var downKey = keyboard[km.settings.keyDown] as KeyControl;
         var rightKey = keyboard[km.settings.keyRight] as KeyControl;
-        HandleKey(leftKey, km.getNextLeft);
-        HandleKey(upKey, km.getNextUp);
-        HandleKey(downKey, km.getNextDown);
-        HandleKey(rightKey, km.getNextRight);
 
+        HandleKey(leftKey, "left");
+        HandleKey(upKey, "up");
+        HandleKey(downKey, "down");
+        HandleKey(rightKey, "right");
     }
 
     public void SetCalibration(float val, bool save = true)
@@ -140,63 +136,64 @@ public class Metronome : MonoBehaviour
         if (save) PlayerPrefs.SetFloat(CALIB_KEY, val);
     }
 
-    public void Scorer(double supposedTick = -1)
+    // Calibration mode - no expected tick
+    public void Scorer()
+    {
+        Scorer(tickPassed);
+    }
+
+    // Normal scoring with expected tick
+    public void Scorer(double expectedTick)
     {
         double samplesPerTick = sampleRate * 60.0F / bpm * 4.0F / signatureLo;
         double currentSampleAbs = (AudioSettings.dspTime - calibrationMS / 1000.0) * sampleRate;
         double sampleSinceStart = currentSampleAbs - startSample;
         if (sampleSinceStart < 0) return;
 
+        // Apply halfTickOffset if needed
         if (halfTickOffset) sampleSinceStart += samplesPerTick * 0.5f;
 
-        double withinTick = sampleSinceStart % samplesPerTick;
-        if (withinTick < 0) withinTick += samplesPerTick;
+        // Calculate current tick based on time elapsed
+        double currentTick = sampleSinceStart / samplesPerTick;
         
-        double signedErrorSamples = withinTick;
-        if (withinTick > samplesPerTick * 0.5) signedErrorSamples = withinTick - samplesPerTick;
+        // Error in ticks
+        double errorTicks = currentTick - expectedTick;
         
-        float signedErrorMs = (float)(signedErrorSamples / sampleRate * 1000.0f);
-        float absMs = Mathf.Abs(signedErrorMs);
-        bool isEarly = signedErrorMs < 0f;
+        // Normalize to [-0.5, 0.5] tick range (wrapping around)
+        while (errorTicks > 0.5) errorTicks -= 1.0;
+        while (errorTicks < -0.5) errorTicks += 1.0;
+        
+        // Convert to samples and then ms
+        double errorSamples = errorTicks * samplesPerTick;
+        float errorMs = (float)(errorSamples / sampleRate * 1000.0f);
+        float absMs = Mathf.Abs(errorMs);
+        bool isEarly = errorMs < 0f;
 
-        if(supposedTick != -1)
-        {
-            Debug.Log("Error in ms: " + signedErrorMs);
-            Debug.Log("Error in samples: " + signedErrorSamples);
-            Debug.Log(withinTick + " samples since last tick. ");
-        }
+        Debug.Log($"Timing: errorMs={errorMs:F2}ms, absMs={absMs:F2}ms, currentTick={currentTick:F2}, expectedTick={expectedTick}, isEarly={isEarly}");
 
         if (absMs <= perfectMs)
         {
             spawner?.ShowPerfect();
             scoreManager?.AddPoints(5);
             pulseCircle?.PulsePerfect();
-            Debug.Log("Perfect hit!");
-            //Detruire le cercle
         }
         else if (absMs <= niceMs)
         {
             spawner?.ShowNice();
             scoreManager?.AddPoints(3);
             pulseCircle?.PulseNice();
-            Debug.Log("Nice hit!");
-            //Detruire le cercle
         }
         else if (absMs <= okMs)
         {
             spawner?.ShowOK();
             scoreManager?.AddPoints(1);
             pulseCircle?.PulseOk();
-            Debug.Log("OK hit!");
-            //Detruire le cercle
         }
         else
         {
             spawner?.ShowBad();
             scoreManager?.AddPoints(-3);
             pulseCircle?.PulseBad();
-            Debug.Log("Bad hit!");
-            //Ne pas detruire le cercle
         }
     }
 
@@ -221,9 +218,9 @@ public class Metronome : MonoBehaviour
 
         if (km == null) return;
         
-        if (tickPassed + 6 == LeftToSpawn) { i++; km.Spawn(speed, "left"); LeftToSpawn = km.getNextLeft(i); }
-        if (tickPassed + 6 == UpToSpawn) { j++; km.Spawn(speed, "up"); UpToSpawn = km.getNextUp(j); }
-        if (tickPassed + 6 == DownToSpawn) { k++; km.Spawn(speed, "down"); DownToSpawn = km.getNextDown(k); }
-        if (tickPassed + 6 == RightToSpawn) { l++; km.Spawn(speed, "right"); RightToSpawn = km.getNextRight(l); }
+        if (tickPassed + 6 == LeftToSpawn) { i++; km.Spawn(speed, "left", LeftToSpawn); LeftToSpawn = km.getNextLeft(i); }
+        if (tickPassed + 6 == UpToSpawn) { j++; km.Spawn(speed, "up", UpToSpawn); UpToSpawn = km.getNextUp(j); }
+        if (tickPassed + 6 == DownToSpawn) { k++; km.Spawn(speed, "down", DownToSpawn); DownToSpawn = km.getNextDown(k); }
+        if (tickPassed + 6 == RightToSpawn) { l++; km.Spawn(speed, "right", RightToSpawn); RightToSpawn = km.getNextRight(l); }
     }
 }
