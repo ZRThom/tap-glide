@@ -1,4 +1,5 @@
 using UnityEngine;
+using System; 
 using System.Collections;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
@@ -97,53 +98,38 @@ public class Metronome : MonoBehaviour
 
     void Update()
     {
-        var inputDevice = Keyboard.current;
-        if (inputDevice == null || km == null || km.settings == null) return;
+        var keyboard = Keyboard.current;
+        if (keyboard == null) return;
 
-        var leftKey = inputDevice[km.settings.keyLeft] as KeyControl;
-        var upKey = inputDevice[km.settings.keyUp] as KeyControl;
-        var downKey = inputDevice[km.settings.keyDown] as KeyControl;
-        var rightKey = inputDevice[km.settings.keyRight] as KeyControl;
-
-        bool AnyDirectionPressed()
+        //Pour la calibration 
+        if(keyboard.spaceKey.wasPressedThisFrame)
         {
-            return (leftKey != null && leftKey.wasPressedThisFrame) ||
-                   (upKey != null && upKey.wasPressedThisFrame) ||
-                   (downKey != null && downKey.wasPressedThisFrame) ||
-                   (rightKey != null && rightKey.wasPressedThisFrame);
+            Debug.Log("Calibration reset");
+            Scorer();
         }
-
-        if (AnyDirectionPressed())
+        void HandleKey(KeyControl key, Func<int, double> getNext)
         {
-            if (leftKey != null && leftKey.wasPressedThisFrame)
+            if(!key.wasPressedThisFrame) return;
+            for(int i = 0; i < getNext(100); i++)
             {
-                for (int i = 0; i < km.getNextLeft(100); i++)
+                if (tickPassed == getNext(i))
                 {
-                    if (tickPassed == km.getNextLeft(i)) { Scorer(); break; }
-                }
-            }
-            if (upKey != null && upKey.wasPressedThisFrame)
-            {
-                for (int i = 0; i < km.getNextUp(100); i++)
-                {
-                    if (tickPassed == km.getNextUp(i)) { Scorer(); break; }
-                }
-            }
-            if (downKey != null && downKey.wasPressedThisFrame)
-            {
-                for (int i = 0; i < km.getNextDown(100); i++)
-                {
-                    if (tickPassed == km.getNextDown(i)) { Scorer(); break; }
-                }
-            }
-            if (rightKey != null && rightKey.wasPressedThisFrame)
-            {
-                for (int i = 0; i < km.getNextRight(100); i++)
-                {
-                    if (tickPassed == km.getNextRight(i)) { Scorer(); break; }
+                    Scorer();
+                    Debug.Log("Clicked at tick " + tickPassed);
+                    Debug.Log("Supposed click was at tick " + getNext(i));
+                    break;
                 }
             }
         }
+        var leftKey = keyboard[km.settings.keyLeft] as KeyControl;
+        var upKey = keyboard[km.settings.keyUp] as KeyControl;
+        var downKey = keyboard[km.settings.keyDown] as KeyControl;
+        var rightKey = keyboard[km.settings.keyRight] as KeyControl;
+        HandleKey(leftKey, km.getNextLeft);
+        HandleKey(upKey, km.getNextUp);
+        HandleKey(downKey, km.getNextDown);
+        HandleKey(rightKey, km.getNextRight);
+
     }
 
     public void SetCalibration(float val, bool save = true)
@@ -192,6 +178,7 @@ public class Metronome : MonoBehaviour
         else
         {
             spawner?.ShowBad();
+            scoreManager?.AddPoints(-3);
             pulseCircle?.PulseBad();
         }
     }
@@ -217,9 +204,9 @@ public class Metronome : MonoBehaviour
 
         if (km == null) return;
         
-        if (tickPassed + 6 == LeftToSpawn) { i++; km.SpawnLeft(speed); LeftToSpawn = km.getNextLeft(i); }
-        if (tickPassed + 6 == UpToSpawn) { j++; km.SpawnUp(speed); UpToSpawn = km.getNextUp(j); }
-        if (tickPassed + 6 == DownToSpawn) { k++; km.SpawnDown(speed); DownToSpawn = km.getNextDown(k); }
-        if (tickPassed + 6 == RightToSpawn) { l++; km.SpawnRight(speed); RightToSpawn = km.getNextRight(l); }
+        if (tickPassed + 6 == LeftToSpawn) { i++; km.Spawn(speed, "left"); LeftToSpawn = km.getNextLeft(i); }
+        if (tickPassed + 6 == UpToSpawn) { j++; km.Spawn(speed, "up"); UpToSpawn = km.getNextUp(j); }
+        if (tickPassed + 6 == DownToSpawn) { k++; km.Spawn(speed, "down"); DownToSpawn = km.getNextDown(k); }
+        if (tickPassed + 6 == RightToSpawn) { l++; km.Spawn(speed, "right"); RightToSpawn = km.getNextRight(l); }
     }
 }

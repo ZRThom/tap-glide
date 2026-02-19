@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls; // Ajouté pour KeyControl
+using UnityEngine.InputSystem.Controls; 
 using System.Collections.Generic;
 
 public class KeyManager : MonoBehaviour
