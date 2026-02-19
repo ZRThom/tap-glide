@@ -4751,8 +4751,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "TEAM  SHROOMEURS\n\n\nKYKS --- \" Menu & Settings \" \nRAPH --- \" GamePlay
-    \" \nTHOM --- \" UI/UX & Calibration \" \n\n\n\n\nThank you for playing ! \n\nShroomeurs
-    2026, \nall right reserved.\n"
+    & mapping \" \nTHOM --- \" UI/UX & Calibration \" \n\n\n\nAll the music was composed
+    by Thom\n\n\n\nThank you for playing ! \n\n\n\nShroomeurs 2026, \nall right reserved.\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f287d4ec48d06846a184f56dfc1d0aa, type: 2}
   m_sharedMaterial: {fileID: -3518640785379252041, guid: 8f287d4ec48d06846a184f56dfc1d0aa, type: 2}
