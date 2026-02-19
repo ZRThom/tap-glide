@@ -15,6 +15,7 @@ public class Change_canvas : MonoBehaviour
     public GameObject level3Canvas;
     public GameObject LvlCalibrage;
     
+    public GameObject CanvasKey;
     private static string canvasAActiver = "";
     public static bool IsCalibrationActive { get; private set;  }
 
@@ -63,6 +64,7 @@ public class Change_canvas : MonoBehaviour
         if(level2Canvas)     level2Canvas.SetActive(false);
         if(level3Canvas)     level3Canvas.SetActive(false);
         if(LvlCalibrage)     LvlCalibrage.SetActive(false);
+        if (CanvasKey) CanvasKey.SetActive(true);
 
         IsCalibrationActive = false;
 
