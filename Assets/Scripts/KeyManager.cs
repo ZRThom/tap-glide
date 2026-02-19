@@ -261,5 +261,13 @@ public class KeyManager : MonoBehaviour
 
         return -1;
     }
+
+    public void ClearQueues()
+    {
+        leftQueue.Clear();
+        upQueue.Clear();
+        downQueue.Clear();
+        rightQueue.Clear();
+    }
     
 }
