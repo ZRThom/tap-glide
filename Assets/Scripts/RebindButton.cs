@@ -23,7 +23,7 @@ public class RebindButton : MonoBehaviour
         if (Keyboard.current.anyKey.wasPressedThisFrame) {
             foreach (var key in Keyboard.current.allKeys) {
                 if (key.wasPressedThisFrame) {
-                    ApplyKey(key.name.ToLower());
+                    ApplyKey(key.name);
                     break;
                 }
             }
@@ -38,6 +38,7 @@ public class RebindButton : MonoBehaviour
 
     // IMPORTANT : On sauvegarde physiquement dans le JSON
     settings.SaveSettings();
+    KeyManager.Instance?.RefreshAfterRebind();
 
     isListening = false;
     UpdateUI();

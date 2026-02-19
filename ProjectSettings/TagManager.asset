@@ -6,6 +6,10 @@ TagManager:
   tags:
   - bg
   - Map
+  - KeyLeft
+  - KeyRight
+  - KeyUp
+  - KeyDown
   layers:
   - Default
   - TransparentFX

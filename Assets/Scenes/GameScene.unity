@@ -391,10 +391,9 @@ GameObject:
   m_Component:
   - component: {fileID: 155323245}
   - component: {fileID: 155323246}
-  - component: {fileID: 155323247}
   m_Layer: 6
   m_Name: bas
-  m_TagString: Untagged
+  m_TagString: KeyDown
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -473,52 +472,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!61 &155323247
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 155323244}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
 --- !u!1 &220908816
 GameObject:
   m_ObjectHideFlags: 0
@@ -966,7 +919,7 @@ GameObject:
   - component: {fileID: 355581231}
   m_Layer: 6
   m_Name: gauche
-  m_TagString: Untagged
+  m_TagString: KeyLeft
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1411,7 +1364,7 @@ MonoBehaviour:
   gain: 0.5
   signatureHi: 4
   signatureLo: 4
-  startOffsetSeconds: -0.1
+  startOffsetSeconds: 0.05
   spawner: {fileID: 643865375}
   scoreManager: {fileID: 643865374}
   pulseCircle: {fileID: 0}
@@ -2442,7 +2395,7 @@ GameObject:
   - component: {fileID: 721620558}
   m_Layer: 6
   m_Name: haut
-  m_TagString: Untagged
+  m_TagString: KeyUp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3121,7 +3074,7 @@ GameObject:
   - component: {fileID: 1248149470}
   m_Layer: 6
   m_Name: droite
-  m_TagString: Untagged
+  m_TagString: KeyRight
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3595,7 +3548,7 @@ MonoBehaviour:
   gain: 0.5
   signatureHi: 4
   signatureLo: 4
-  startOffsetSeconds: -0.1
+  startOffsetSeconds: 0.05
   spawner: {fileID: 643865375}
   scoreManager: {fileID: 643865374}
   pulseCircle: {fileID: 0}
@@ -3805,14 +3758,14 @@ MonoBehaviour:
   gain: 0.5
   signatureHi: 4
   signatureLo: 4
-  startOffsetSeconds: -0.1
+  startOffsetSeconds: 0
   spawner: {fileID: 643865375}
   scoreManager: {fileID: 643865374}
   pulseCircle: {fileID: 0}
   perfectMs: 45
   niceMs: 90
   okMs: 135
-  calibrationMS: 0
+  calibrationMS: -0.05
   halfTickOffset: 0
 --- !u!82 &1476913954
 AudioSource:

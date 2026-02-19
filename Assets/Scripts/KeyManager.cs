@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls; 
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class KeyManager : MonoBehaviour
 {
@@ -268,6 +269,27 @@ public class KeyManager : MonoBehaviour
         upQueue.Clear();
         downQueue.Clear();
         rightQueue.Clear();
+    }
+
+    public void RefreshAfterRebind()
+    {
+        if (settings != null) settings.LoadSettings();
+        setBase(left);
+        setBase(up);
+        setBase(down);
+        setBase(right);
+    }
+
+    private void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
+    private void OnDisnable() => SceneManager.sceneLoaded -= OnSceneLoaded;
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        left = GameObject.FindGameObjectWithTag("KeyLeft");
+        up = GameObject.FindGameObjectWithTag("KeyUp");
+        down = GameObject.FindGameObjectWithTag("KeyDown");
+        right = GameObject.FindGameObjectWithTag("KeyRight");
+
+        RefreshAfterRebind();
     }
     
 }
