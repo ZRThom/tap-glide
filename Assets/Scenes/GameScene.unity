@@ -366,6 +366,10 @@ MonoBehaviour:
   CanvasKey: {fileID: 1477013179}
   fader: {fileID: 2112519401}
   fadeDuration: 0.5
+  autoReturnEnabled: 1
+  autoReturnLevel1Min: 0.5
+  autoReturnLevel2Min: 1.05
+  autoReturnLevel3Min: 1
 --- !u!4 &136544470
 Transform:
   m_ObjectHideFlags: 0
@@ -4053,7 +4057,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Click to calibrate your rythm !
+  m_text: Press space to calibrate your rythm !
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f287d4ec48d06846a184f56dfc1d0aa, type: 2}
   m_sharedMaterial: {fileID: -3518640785379252041, guid: 8f287d4ec48d06846a184f56dfc1d0aa, type: 2}

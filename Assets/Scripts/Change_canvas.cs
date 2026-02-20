@@ -23,16 +23,28 @@ public class Change_canvas : MonoBehaviour
     private bool isTransitioning = false;
     private static bool pendingFadeIn = false;
 
+    [Header("Auto back")]
+    public bool autoReturnEnabled = true;
+    public float autoReturnLevel1Min = 1f;
+    public float autoReturnLevel2Min = 1f;
+    public float autoReturnLevel3Min = 1f;
+    private Coroutine autoReturnRoutine = null;
+    private string currentCanvasKey = "";
+    private string previousCanvasKey = "";
+    private const string AR_L1 = "AUTO_RETURN_L1_MIN";
+    private const string AR_L2 = "AUTO_RETURN_L2_MIN";
+    private const string AR_L3 = "AUTO_RETURN_L3_MIN";
+    private static string returnScene = "";
+    private static string returnCanvas = "";
+    
     private static string canvasAActiver = "";
     public static bool IsCalibrationActive { get; private set;  }
 
     void Start()
     {
-        if (!string.IsNullOrEmpty(canvasAActiver))
-        {
-            AppliquerAffichage(canvasAActiver);
-            canvasAActiver = "";
-        }
+        autoReturnLevel1Min = PlayerPrefs.GetFloat(AR_L1, autoReturnLevel1Min);
+        autoReturnLevel2Min = PlayerPrefs.GetFloat(AR_L2, autoReturnLevel2Min);
+        autoReturnLevel3Min = PlayerPrefs.GetFloat(AR_L3, autoReturnLevel3Min);
 
         if (fader != null)
         {
@@ -49,6 +61,60 @@ public class Change_canvas : MonoBehaviour
                 fader.blocksRaycasts = false;
             }
         }
+        
+        if (!string.IsNullOrEmpty(canvasAActiver))
+        {
+            AppliquerAffichage(canvasAActiver);
+            canvasAActiver = "";
+        }
+    }
+
+    private string NormalizeCanvasKey(string nom)
+    {
+        nom = nom.Trim();
+        if (nom == "Jeu") nom = "Level 1";
+        if (nom == "LvlCalibrage" || nom == "Calibration") nom = "Calibrage";
+        if (nom == "game_select") nom = "Canvas Game_select";
+        return nom;
+    }
+
+    private float GetAutoReturnMinutesForCanvas(string canvasKey)
+    {
+        switch (canvasKey)
+        {
+            case "Level 1": return autoReturnLevel1Min;
+            case "Level 2": return autoReturnLevel2Min;
+            case "Level 3": return autoReturnLevel3Min;
+            default: return 0f;
+        }
+    }
+
+    private void StartAutoReturnTimer(float minutes)
+    {
+        if (autoReturnRoutine != null)
+        {
+            StopCoroutine(autoReturnRoutine);
+            autoReturnRoutine = null;
+        }
+        if (!autoReturnEnabled) return;
+        if (minutes <= 0f) return;
+        autoReturnRoutine = StartCoroutine(AutoReturnAfterSeconds(minutes * 60f));
+    }
+
+    private IEnumerator AutoReturnAfterSeconds(float seconds)
+    {
+        yield return new WaitForSecondsRealtime(seconds);
+        if (!string.IsNullOrEmpty(previousCanvasKey))
+        {
+            if (previousCanvasKey != currentCanvasKey) StartCoroutine(FadeSwitch(previousCanvasKey));
+            yield break;
+        }
+        if (!string.IsNullOrEmpty(returnScene))
+        {
+            StartCoroutine(FadeLoadScene(returnScene, returnCanvas));
+            yield break;
+        }   
+        StartCoroutine(FadeSwitch("Canvas Game_Select"));
     }
 
     public void ChargerSceneEtCanvas(string instruction)
@@ -112,11 +178,21 @@ public class Change_canvas : MonoBehaviour
         if (fader != null) yield return Fade(0f, 1f, fadeDuration);
         canvasAActiver = canvasName;
         pendingFadeIn = true;
+        returnScene = SceneManager.GetActiveScene().name;
+        returnCanvas = currentCanvasKey;
         SceneManager.LoadScene(sceneName);
     }
 
     private void AppliquerAffichage(string nom)
     {
+        nom = NormalizeCanvasKey(nom);
+        if (autoReturnRoutine != null)
+        {
+            StopCoroutine(autoReturnRoutine);
+            autoReturnRoutine = null;
+        }
+        if (!string.IsNullOrEmpty(currentCanvasKey) && currentCanvasKey != nom) previousCanvasKey = currentCanvasKey;
+        currentCanvasKey = nom;
         if(menuPrincipal)    menuPrincipal.SetActive(false);
         if(creditsCanvas)    creditsCanvas.SetActive(false);
         if(settingsCanvas)   settingsCanvas.SetActive(false);
@@ -175,6 +251,8 @@ public class Change_canvas : MonoBehaviour
                 Debug.LogWarning("Le nom '" + nom + "' n'est pas reconnu dans le switch.");
                 break;
         }
+        float minutes = GetAutoReturnMinutesForCanvas(nom);
+        StartAutoReturnTimer(minutes);
     }
 
     private void loadQueue(int level)

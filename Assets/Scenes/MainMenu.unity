@@ -1244,6 +1244,11 @@ MonoBehaviour:
   CanvasKey: {fileID: 0}
   fader: {fileID: 1336941659}
   fadeDuration: 0.5
+  autoReturnEnabled: 1
+  autoReturnLevel1Min: 0.5
+  autoReturnLevel2Min: 1
+  autoReturnLevel3Min: 1
+  autoReturnCalibrageMin: 1
 --- !u!1 &251927649
 GameObject:
   m_ObjectHideFlags: 0
