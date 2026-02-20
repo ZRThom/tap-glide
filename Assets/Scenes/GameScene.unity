@@ -1259,7 +1259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 391ae3af8d563a64caeb2dbc3303ebca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Metronome
-  bpm: 130
+  bpm: 260
   gain: 0.5
   signatureHi: 4
   signatureLo: 4
