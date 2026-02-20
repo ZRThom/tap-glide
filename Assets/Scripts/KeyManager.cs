@@ -177,25 +177,31 @@ public class KeyManager : MonoBehaviour
 
     public void Spawn(double speed, string direction, double expectedTick = -1)
     {
+        Color color = Color.white;
         float xPos = 0f;
         switch (direction)
         {
             case "left":
                 xPos = -2.25f;
+                color = Color.yellow;
                 break;
             case "up":
                 xPos = -0.75f;
+                color = Color.green;
                 break;
             case "down":
                 xPos = 0.75f;
+                color = Color.blue;
                 break;
             case "right":
                 xPos = 2.25f;
+                color = Color.red;
                 break;
         }
 
         GameObject circle = Instantiate(Circle, new Vector2(xPos, 10f), Quaternion.identity);
         CircleMovement movement = circle.GetComponent<CircleMovement>();
+        circle.GetComponent<SpriteRenderer>().color = color; // Set color for visual distinction
         movement.spawnDspTime = AudioSettings.dspTime;
         movement.speed = (float)speed;
         movement.direction = direction;
