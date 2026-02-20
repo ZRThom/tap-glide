@@ -1267,9 +1267,9 @@ MonoBehaviour:
   spawner: {fileID: 643865375}
   scoreManager: {fileID: 643865374}
   pulseCircle: {fileID: 0}
-  perfectMs: 45
-  niceMs: 90
-  okMs: 135
+  perfectMs: 30
+  niceMs: 70
+  okMs: 100
   calibrationMS: 0
   halfTickOffset: 0
 --- !u!1 &573766106
